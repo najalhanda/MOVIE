@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="KK">
+	<select id="rsvselect" parameterType="rsv" resultType="rsv">		
+		SELECT A.RESERVEID, A.EUID, B.EMGCODE, B.MCODE, B.EMSDATE, B.EMSTIME
+		FROM RESERVATION A, EMGMINFORMATION B
+		WHERE A.RESERVEID=#{reserveId} AND A.EMSCODE=B.EMSCODE AND A.EUID=#{euId}	
+	</select>	
+	
+	<select id="rsvIdmax" parameterType="rsv" resultType="int">		
+		SELECT max(A.RESERVEID)
+		FROM RESERVATION A, EMGMINFORMATION B
+		WHERE A.EMSCODE=#{emsCode} AND A.EMSCODE=B.EMSCODE AND A.EUID=#{euId}
+	</select>	
+	
+	<insert id="rsvInsert" parameterType="rsv">
+		INSERT INTO RESERVATION VALUES
+		(RESERVEID_SEQ.NEXTVAL, #{euId}, #{emsCode}) 
+	</insert>
+	
+	<select id="reserve" parameterType="kk" resultType="int">
+		SELECT EMSCODE FROM EMGMINFORMATION 
+		WHERE MCODE = #{mCode} AND EMGCODE = #{emgCode} AND EMSDATE = #{emsDate} AND EMSTIME = #{emsTime}
+	</select>
+	
+	<select id="timesearch" parameterType="kk" resultType="String">
+		SELECT EMSTIME FROM EMGMINFORMATION 
+		WHERE MCODE = #{mCode} AND EMGCODE = #{emgCode} AND EMSDATE = #{emsDate}
+	</select>
+	
+	<select id="ebuyselect" parameterType="kk" resultType="int">
+		SELECT * FROM EMGMINFORMATION WHERE EMSCODE = #{emsCode}
+	</select>
+	 
+	<insert id="ebuy" parameterType="kk">
+		INSERT INTO EMGMINFORMATION VALUES 
+		(EMGMINFORMATION_SEQ.NEXTVAL,#{mCode},#{emgCode},#{emsDate},#{emsTime})
+	</insert>
+	<insert parameterType="kk" id="emgtime">
+		INSERT INTO EMGMINFORMATION VALUES
+		(EMGMINFORMATION_SEQ.NEXTVAL,#{mCode},#{emgCode},#{emsDate},#{emsTime})
+	</insert>
+		<select id="tCount" resultType="int">
+		SELECT COUNT(*) FROM EMGMINFORMATION
+	</select>
+	<select id="moivietimelist" parameterType="paging" resultType="kk">
+		SELECT
+		* FROM INFORMATIONLIST WHERE RN BETWEEN #{startRow} AND #{endRow}
+	</select>
+		<select id="tView" parameterType="int" resultType="kk">
+		SELECT * FROM EMGMINFORMATION WHERE EMSCODE = #{emsCode}
+	</select>
+	<update id="tkModify" parameterType="kk">
+			UPDATE EMGMINFORMATION SET MCODE=#{mCode},
+									   EMGCODE=#{emgCode},
+									   EMSDATE=#{emsDate},
+									   EMSTIME=#{emsTime}
+									   WHERE EMSCODE=#{emsCode}
+	</update>
+	<delete id="tDelete" parameterType="kk">
+	DELETE FROM EMGMINFORMATION WHERE EMSCODE =#{emsCode}
+	</delete>
+</mapper>
